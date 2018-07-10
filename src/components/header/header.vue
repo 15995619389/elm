@@ -67,6 +67,8 @@
             <div class="detail-close" @click="detailHide">
                 <span>关闭</span>
             </div>
+            <!-- 1111111111 -->
+      <!-- 5555555555555 -->
         </div>
         </transition>
     </div>
