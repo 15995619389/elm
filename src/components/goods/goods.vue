@@ -33,6 +33,10 @@
                                    <span class="now">￥{{food.price}}</span>
                                    <span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                                </div>
+                              <!-- cartcontrol组件+-小按钮 -->
+                               <div class="cartControl-wrapper">
+                                 <cartControl :food='food'></cartControl>
+                               </div>
                            </div>
                        </li>
                    </ul>
@@ -40,12 +44,15 @@
            </ul>
        </div>
        <!-- 购物车 -->
-       <shop-cart></shop-cart>
+       <ShopCart :selectFoods='selectFoods' :delivery-price="seller.deliveryPrice"></ShopCart>
     </div>
 </template>
 <script>
-import BScroll from "better-scroll"
-import ShopCart from '../shopcart/shopcart'
+import BScroll from "better-scroll";
+import ShopCart from "../shopcart/shopcart";
+import cartControl from "../cartcontrol/cartcontrol";
+
+
 export default {
   data() {
     return {
@@ -65,46 +72,59 @@ export default {
       });
     });
   },
-  components:{
-    ShopCart
+  components: {
+    ShopCart,
+    cartControl
   },
   computed: {
     // 获取滑动到相应区间的索引，去和menu-item遍历是的$index对应，联动
-    leftIndex() {    
+    leftIndex() {
       for (let i = 0; i < this.listHeight.length; i++) {
         let h1 = this.listHeight[i]; //当前index 的高度
         let h2 = this.listHeight[i + 1]; //下一个的高度
         if (!h2 || (this.scrollY >= h1 && this.scrollY < h2)) {
           return i;
-          console.log(i)
+          console.log(i);
         }
       }
       return 0;
-    }
+    },
+    // selectFoods(){
+    //   let foods = [];
+    //   this.goods.forEach((good)=>{
+    //     this.foods.forEach((food)=>{
+    //       if(food.count){
+    //         foods.push(food)
+    //       }
+    //     })
+    //   })
+    //   return foods;
+    // }
   },
   methods: {
     // left点击
-    menuClick(index,event){
+    menuClick(index, event) {
       /* better-scroll在pc有_constructed属性（区别）pc没有这个事件false*/
       // better-scroll在pc端点击的会触发两次，这里需要设置
-      if(!event._constructed){
+      if (!event._constructed) {
         return;
       }
       // 获取dom相对应的节点
       let foodList = this.$refs.foodsWrapper;
-      this.foodsScroll.scrollToElement(foodList[index],300)
-      console.log(index)
+      this.foodsScroll.scrollToElement(foodList[index], 300);
+      console.log(index);
     },
     _initScroll() {
       // 这里用$refs来绑定元素 menuWrapper 获取原生dom
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
-        click:true  //BScroll点击需要设置
+        click: true //BScroll点击需要设置
       });
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
-         click: true,
+        click: true,
         probeType: 3 //滚动的时候，检测滚动位置 /* better-scroll探针*/
       });
-      this.foodsScroll.on("scroll", pos => { /* 滚动监听*/
+      this.foodsScroll.on("scroll", pos => {
+        /* 滚动监听*/
         this.scrollY = Math.abs(Math.round(pos.y)); //先取整，在取正值
       });
     },
@@ -147,8 +167,8 @@ export default {
         margin-top: -1px;
         background: #fff;
         font-weight: 700;
-        .text{
-          color: red
+        .text {
+          color: red;
         }
       }
       .text {
@@ -183,6 +203,7 @@ export default {
       }
       .content {
         flex: 1;
+        position: relative;
         .name {
           margin: 2px 0 8px 0;
           height: 14px;
@@ -218,6 +239,11 @@ export default {
             font-size: 10px;
             color: rgb(147, 153, 159);
           }
+        }
+        .cartControl-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 2px;
         }
       }
     }
