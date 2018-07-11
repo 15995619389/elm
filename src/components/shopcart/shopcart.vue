@@ -15,68 +15,93 @@
               <div class="pay" :class="payClass">{{payDesc}}</div><!-- 判断结算按钮是否高亮 -->
             </div>
         </div>
+        <!-- 小球动画 -->
+        <div class="ball-container">
+          <div transition="drop" v-for="(ball,index) in balls" :key="index" v-show="ball.show" class="ball">
+            <div class="inner inner-hook"></div>
+          </div>
+        </div>
     </div>
 </template>
 <script>
 export default {
-  props:{
-    selectFoods:{
-      type:Array,
-      default(){
+  props: {
+    selectFoods: {
+      type: Array,
+      default() {
         return [
-          {
-            price:50,
-            count:1
-          }
-        ]
+          
+        ];
       }
     },
-    // 
-    deliveryPrice:{
-      type:Number,
-      default:0
+    //
+    deliveryPrice: {
+      type: Number,
+      default: 0
     },
     // 配送价
-    minPrice:{
-      type:Number,
-      default:0
+    minPrice: {
+      type: Number,
+      default: 0
     }
   },
-  computed:{
-    totalPrice(){
+  data() {
+    return {
+      balls: [
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        }
+      ]
+    };
+  },
+  computed: {
+    totalPrice() {
       let total = 0;
-      this.selectFoods.forEach((foods) => {
-        total = foods.price*foods.count  //商品总价 = selectFoods下商品的单价*商品个数
+      this.selectFoods.forEach(foods => {
+        total = foods.price * foods.count; //商品总价 = selectFoods下商品的单价*商品个数
       });
       return total;
-      console.log(total)
+      console.log(total);
     },
     // 选中的商品总数
-    totalCount(){
+    totalCount() {
       let count = 0;
-      this.selectFoods.forEach((foods)=>{
-        count += foods.count
+      this.selectFoods.forEach(foods => {
+        count += foods.count;
       });
       return count;
     },
     // 结算状态切换
-    payDesc(){
-      if(this.totalPrice === 0){
-        return `￥${this.minPrice}元起送`
-      }else if(this.totalPrice<this.minPrice){//当总价小于配送价
+    payDesc() {
+      if (this.totalPrice === 0) {
+        return `￥${this.minPrice}元起送`;
+      } else if (this.totalPrice < this.minPrice) {
+        //当总价小于配送价
         // 顶一个变量  求差值
-        let diff = this.minPrice - this.totalPrice
-        return `还差${diff}元起送`
-      }else{
-        return `去结算`
+        let diff = this.minPrice - this.totalPrice;
+        return `还差${diff}元起送`;
+      } else {
+        return `去结算`;
       }
     },
     // 切换class高亮
-    payClass(){
-      if(this.totalPrice<this.minPrice){
-        return 'not-enough'
-      }else{
-        return 'enough'
+    payClass() {
+      if (this.totalPrice < this.minPrice) {
+        return "not-enough";
+      } else {
+        return "enough";
       }
     }
   }
@@ -115,15 +140,15 @@ export default {
           border-radius: 50%;
           text-align: center;
           background: #2b343c;
-          &.heiglight{
-            background: rgb(0, 160, 220)
+          &.heiglight {
+            background: rgb(0, 160, 220);
           }
-          .icon-shopping_cart{
+          .icon-shopping_cart {
             line-height: 44px;
             font-size: 24px;
             color: #80858a;
-            &.highlight{
-              color: #fff
+            &.highlight {
+              color: #fff;
             }
           }
         }
@@ -153,8 +178,8 @@ export default {
         border-right: 1px solid rgba(255, 255, 255, 0.1);
         font-size: 16px;
         font-weight: 700;
-        &.heiglight{
-          color: #fff
+        &.heiglight {
+          color: #fff;
         }
       }
       .desc {
@@ -175,14 +200,32 @@ export default {
         font-size: 12px;
         font-weight: 700;
         background: #80858a;
-        &.not-enough{
-          background: #2b343c
+        &.not-enough {
+          background: #2b343c;
         }
-        &.enough{
+        &.enough {
           background: #00b43c;
-          color:#fff;
+          color: #fff;
         }
       }
+    }
+  }
+  .ball-container{
+    .ball{
+      position: fixed;
+        left: 32px;
+        bottom: 22px;
+        z-index: 200;
+        &.drop-transition{
+          transition: all 0.4s cubic-bezier(.55, -0.45, .9, .53);
+          .inner{
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgb(0, 160, 220);
+            transition: all 0.4s linear;
+          }
+        }
     }
   }
 }

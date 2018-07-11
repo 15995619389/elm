@@ -90,7 +90,11 @@ export default {
   },
   props: ["seller"],
   created() {
+    
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
+  },
+  mounted(){
+    console.log(this.seller)
   },
   methods: {
     showDetail: function() {

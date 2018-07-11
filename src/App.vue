@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="header">
-      <Header :seller="sellerObj"></Header>
+      <Header :seller="seller"></Header>
     </div>
     <div class="tab">
       <div class="tab-item">
@@ -14,7 +14,8 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view/>
+    <!-- 路由外联  把seller参数传递过去 -->
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 
@@ -25,14 +26,14 @@ export default {
   name: 'App',
   data() {
     return {
-      sellerObj:{}
+      seller:{}
     }
   },
   created(){
     this.$http.get('/api/seller').then( (res) =>{
       console.log(res)
       if(res.body.errno == 0){
-        this.sellerObj = res.body.data
+        this.seller = res.body.data
       }
     })
     

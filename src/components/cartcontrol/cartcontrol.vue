@@ -1,11 +1,12 @@
 <template>
     <div class="cartcontrol">
-        <div class="cart-decrease" transition="move" @click="remove" v-show="food.count>0">
+        <div class="cart-decrease" transition="move" @click.stop.prevent="remove" v-show="food.count>0">
             <!-- 一个层平移  一个层滚动 -->
             <span class="inner icon-remove_circle_outline">-</span>
         </div>
         <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
-        <div class="cart-add icon-add_circle" @click="addcart($event)">+</div>
+        <!-- click.stop.prevent:阻止事件冒泡 -->
+        <div class="cart-add icon-add_circle" @click.stop.prevent="addcart($event)">+</div>
     </div>
 </template>
 <script>

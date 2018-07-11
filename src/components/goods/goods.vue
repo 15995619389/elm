@@ -18,9 +18,9 @@
                <li class="food-list" v-for="(item,index) in goods" :key="index" ref="hook">
                    <h1 class="title">{{item.name}}</h1>
                    <ul>
-                       <li v-for="(food,index) in item.foods" :key="index" class="food-item">
+                       <li v-for="(food,index) in item.foods" :key="index" class="food-item" > 
                            <div class="icon">
-                               <img :src="food.icon" width="57" height="57"/>
+                               <img :src="food.icon" width="57" height="57" @click="selectfood(food,$event)"/>
                            </div>
                            <div class="content">
                                <h2 class="name">{{food.name}}</h2>
@@ -44,14 +44,17 @@
            </ul>
        </div>
        <!-- 购物车 -->
-       <ShopCart></ShopCart>
+       <ShopCart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ></ShopCart>
 
+       <!-- datail -->
+      <Datail :food='selectfoodA' ref="food"></Datail>
     </div>
 </template>
 <script>
 import BScroll from "better-scroll";
 import ShopCart from "../shopcart/shopcart";
 import cartControl from "../cartcontrol/cartcontrol";
+import Datail from '../foodDatail/datail'
 
 
 export default {
@@ -59,14 +62,16 @@ export default {
     return {
       goods: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      selectfoodA:{}
     };
   },
   props: ["seller"],
   created() {
     this.$http.get("api/goods").then(res => {
       this.goods = res.body.data;
-      console.log(this.goods);
+       console.log(this.goods);
+       console.log(this.seller)
       this.$nextTick(() => {
         this._initScroll();
         this.contentHeight();
@@ -75,7 +80,8 @@ export default {
   },
   components: {
     ShopCart,
-    cartControl
+    cartControl,
+    Datail
   },
   computed: {
     // 获取滑动到相应区间的索引，去和menu-item遍历是的$index对应，联动
@@ -85,24 +91,34 @@ export default {
         let h2 = this.listHeight[i + 1]; //下一个的高度
         if (!h2 || (this.scrollY >= h1 && this.scrollY < h2)) {
           return i;
-          console.log(i);
+          // console.log(i);
         }
       }
       return 0;
     },
-    // selectFoods(){
-    //   let foods = [];
-    //   this.goods.forEach((good)=>{
-    //     this.foods.forEach((food)=>{
-    //       if(food.count){
-    //         foods.push(food)
-    //       }
-    //     })
-    //   })
-    //   return foods;
-    // }
+    selectFoods(){
+      let foods = [];
+      this.goods.forEach((good)=>{
+        this.foods.forEach((food)=>{
+          if(food.count){
+            foods.push(food)
+          }
+        })
+      })
+      return foods;
+      console.log(foods)
+    }
   },
   methods: {
+    // 
+    selectfood(food,event){
+       if (!event._constructed) {
+        return;
+      }
+      this.selectfoodA  = food;
+      this.$refs.food.show()
+    },
+
     // left点击
     menuClick(index, event) {
       /* better-scroll在pc有_constructed属性（区别）pc没有这个事件false*/
@@ -111,9 +127,8 @@ export default {
         return;
       }
       // 获取dom相对应的节点
-      let foodList = this.$refs.foodsWrapper;
+      let foodList = this.$refs.hook;
       this.foodsScroll.scrollToElement(foodList[index], 300);
-      console.log(index);
     },
     _initScroll() {
       // 这里用$refs来绑定元素 menuWrapper 获取原生dom
@@ -139,7 +154,7 @@ export default {
         h += item.clientHeight; /* 得到每个类别区间累加后的高度*/
         this.listHeight.push(h);
       }
-      console.log(this.listHeight);
+      // console.log(this.listHeight);
     }
   }
 };
