@@ -93,9 +93,6 @@ export default {
     
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
   },
-  mounted(){
-    console.log(this.seller)
-  },
   methods: {
     showDetail: function() {
       this.detailShow = true;

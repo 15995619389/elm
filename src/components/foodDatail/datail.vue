@@ -15,34 +15,79 @@
                     <span class="now">￥{{food.price}}</span>
                     <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                 <!-- cartcontrol组件购物车加减 -->
+                <div class="cartcontrol-wrapper">
+                  <Cartcontrol :food="food"></Cartcontrol>
+                </div>
+                <!-- 加入购物车 显示条件-->
+                <div @click.stop.prevent="addFirst" class="buy" v-show="!food.count || food.count===0" transition="fade">加入购物车</div>
+            </div>
+            <!-- split分割组件 判断一下有的可能没有info-->
+            <Split v-show="food.info"></Split>
+            <!-- 商品信息 -->
+            <div class="info" v-show="food.info">
+              <h1 class="title">商品信息</h1>
+              <p class="text">{{food.info}}</p>
+            </div>
+            <Split></Split>
+            <div class="rating">
+              <h1 class="title">商品评价</h1>
+
             </div>
         </div>
     </div>
 </template>
 <script>
+import Vue from 'vue'
 import BScroll from "better-scroll";
+import Cartcontrol from '../cartcontrol/cartcontrol'
+import Split from '../split/split'
+
+const ALL = 2;
 export default {
   // 从父组件传过来的
   data() {
     return {
-      showFlag: false
+      showFlag: false,
+      selectType:ALL,
+      onlyContent:true,
+      desc:{
+        all:'全部',
+        positive:'推荐',
+        negative:'吐槽'
+      }
     };
   },
-
+  components:{
+    Cartcontrol,
+    Split
+  },
   props: ["food"],
+  created(){
+    console.log(this.food)
+  },
   methods: {
+    // 加入购物车
+    addFirst(event){
+      if(!event._constructed){
+        return;
+      }
+      Vue.set(this.food,'count',1)
+    },
     show() {
       this.showFlag = true;
+      this.selectType = ALL;
+      this.onlyContent = true;
       // 当为nextTick时，保证dom渲染了
-      this.$nextTick(()=>{
-        if(!this.scroll){
-          this.scroll = new BScroll(this.$refs.foodScroll,{
-            click:true
+      this.$nextTick(() => {
+        if (!this.scroll) {
+          this.scroll = new BScroll(this.$refs.foodScroll, {
+            click: true
           });
-        }else{
-          this.scroll.refresh()
+        } else {
+          this.scroll.refresh();
         }
-      })
+      });
     },
     back() {
       this.showFlag = false;
@@ -89,7 +134,7 @@ export default {
         text-align: center;
         line-height: 40px;
         background: #fff;
-        border-radius: 50%
+        border-radius: 50%;
       }
     }
     .content {
@@ -116,19 +161,69 @@ export default {
           margin-right: 12px;
         }
       }
-      .price{
-           font-weight: 700;
+      .price {
+        font-weight: 700;
         line-height: 24px;
-        .now{
-            margin-right: 8px;
+        .now {
+          margin-right: 8px;
           font-size: 14px;
           color: rgb(240, 20, 20);
         }
-        .old{
-             text-decoration: line-through;
+        .old {
+          text-decoration: line-through;
           font-size: 10px;
           color: rgb(147, 153, 159);
         }
+      }
+      .cartcontrol-wrapper{
+        position: absolute;
+        right: 25px;
+        bottom: 21px;
+      }
+      .buy{
+         position: absolute;
+        right: 18px;
+        bottom: 18px;
+        z-index: 10;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        border-radius: 12px;
+        font-size: 10px;
+        color: #fff;
+        background: rgb(0, 160, 220);
+      }
+      .fade-transition{
+        transition: all 0.5s;
+        opacity: 1;
+      }
+      .fade-enter,.fade-leave{
+        opacity: 0;
+      }
+    }
+    .info{
+      padding: 18px;
+      .title{
+        line-height: 14px;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
+      }
+      .text{
+        line-height: 24px;
+        padding: 0 8px;
+        font-size: 12px;
+        color: rgb(77, 85, 93);
+      }
+    }
+    .rating{
+      padding-top: 0 18px;
+      .title{
+        line-height: 14px;
+        margin-left: 18px;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
       }
     }
   }

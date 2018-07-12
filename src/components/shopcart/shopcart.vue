@@ -1,7 +1,7 @@
 <template>
     <div class="shopcart">
-        <div class="content">
-            <div class="content-left">
+        <div class="content" >
+            <div class="content-left" @click="togleList">
                 <div class="logo-wrapper">
                     <div class="logo" :class="{'heiglight':totalCount>0}"><!--高亮样式 -->
                         <i class="icon-shopping_cart" :class="{'heiglight':totalCount>0}"></i>
@@ -21,16 +21,44 @@
             <div class="inner inner-hook"></div>
           </div>
         </div>
+        <!-- 购物车list -->
+        <div class="shopcart-list" v-show="listShow" transition="fade">
+          <div class="list-header">
+            <h1 class="title">购物车</h1>
+            <span class="empty">清空</span>
+          </div>
+          <div class="list-content" ref="listContent">
+            <ul>
+              <li class="food" v-for="(food,index) in selectFoods" :key="index">
+                <span class="name">{{food.name}}</span>
+                <div class="price">
+                  <span>￥{{food.price*food.count}}</span>
+                </div>
+                <div class="cartcontrol-warpper">
+                  <cartControl :food="food"></cartControl>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
     </div>
 </template>
 <script>
+import BScroll from "better-scroll";
+import cartControl from "../cartcontrol/cartcontrol";
 export default {
+  components: {
+    cartControl
+  },
   props: {
     selectFoods: {
       type: Array,
       default() {
         return [
-          
+          {
+            price: 10,
+            count: 1
+          }
         ];
       }
     },
@@ -47,6 +75,7 @@ export default {
   },
   data() {
     return {
+      fold: true,
       balls: [
         {
           show: false
@@ -70,7 +99,7 @@ export default {
     totalPrice() {
       let total = 0;
       this.selectFoods.forEach(foods => {
-        total = foods.price * foods.count; //商品总价 = selectFoods下商品的单价*商品个数
+        total += foods.price * foods.count; //商品总价 = selectFoods下商品的单价*商品个数
       });
       return total;
       console.log(total);
@@ -103,6 +132,34 @@ export default {
       } else {
         return "enough";
       }
+    },
+    listShow() {
+   
+      
+
+      // 也就是等于0
+      if (this.totalCount <= 0) {
+        this.fold = true;
+        return false;
+      }
+      let show = !this.fold;
+         // 初始化
+      if(show){
+        this.$nextTick(()=>{
+          this.scroll = new BScroll(this.$refs.listContent,{
+            click:true
+          })
+        })
+      }
+      return show;
+    }
+  },
+  methods: {
+    togleList() {
+      if (!this.totalCount) {
+        return;
+      }
+      this.fold = !this.fold;
     }
   }
 };
@@ -210,22 +267,85 @@ export default {
       }
     }
   }
-  .ball-container{
-    .ball{
+  .ball-container {
+    .ball {
       position: fixed;
-        left: 32px;
-        bottom: 22px;
-        z-index: 200;
-        &.drop-transition{
-          transition: all 0.4s cubic-bezier(.55, -0.45, .9, .53);
-          .inner{
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: rgb(0, 160, 220);
-            transition: all 0.4s linear;
-          }
+      left: 32px;
+      bottom: 22px;
+      z-index: 200;
+      &.drop-transition {
+        transition: all 0.4s cubic-bezier(0.55, -0.45, 0.9, 0.53);
+        .inner {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: rgb(0, 160, 220);
+          transition: all 0.4s linear;
         }
+      }
+    }
+  }
+  .shopcart-list {
+    position: absolute;
+    left: 0;
+    top: -190px;
+    z-index: -1;
+    width: 100%;
+    &.fold-transition {
+      transition: all 0.5s;
+      transform: translate3d(0, -100%, 0);
+    }
+    &.fold-enter,
+    &.fold-leave {
+      transform: translate3d(0, 0, 0);
+    }
+    .list-header {
+      height: 40px;
+      line-height: 40px;
+      padding: 0 18px;
+      background: #f3f5f7;
+      border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+      .title {
+        float: left;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
+      }
+      .empty {
+        float: right;
+        font-size: 12px;
+        color: rgb(0, 160, 220);
+      }
+    }
+    .list-content {
+      padding: 0 18px;
+      height: 150px;
+      overflow-y: scroll;
+      background: #fff;
+      .food {
+        position: relative;
+        padding: 12px 0;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+        .name {
+          line-height: 24px;
+          font-size: 14px;
+          color: rgb(7, 17, 27);
+        }
+        .price {
+          position: absolute;
+          right: 90px;
+          bottom: 12px;
+          line-height: 24px;
+          font-size: 14px;
+          font-weight: 700;
+          color: rgb(240, 20, 20);
+        }
+        .cartcontrol-warpper {
+          position: absolute;
+          right: 0;
+          bottom: 15px;
+        }
+      }
     }
   }
 }

@@ -44,18 +44,17 @@
            </ul>
        </div>
        <!-- 购物车 -->
-       <ShopCart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ></ShopCart>
+       <ShopCart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart" :select-foods="selectFoods"></ShopCart>
 
        <!-- datail -->
-      <Datail :food='selectfoodA' ref="food"></Datail>
+      <Datail :food='selectfoodA' ref="datail"></Datail>
     </div>
 </template>
 <script>
 import BScroll from "better-scroll";
 import ShopCart from "../shopcart/shopcart";
 import cartControl from "../cartcontrol/cartcontrol";
-import Datail from '../foodDatail/datail'
-
+import Datail from "../foodDatail/datail";
 
 export default {
   data() {
@@ -63,15 +62,13 @@ export default {
       goods: [],
       listHeight: [],
       scrollY: 0,
-      selectfoodA:{}
+      selectfoodA: {}
     };
   },
   props: ["seller"],
   created() {
     this.$http.get("api/goods").then(res => {
       this.goods = res.body.data;
-       console.log(this.goods);
-       console.log(this.seller)
       this.$nextTick(() => {
         this._initScroll();
         this.contentHeight();
@@ -96,27 +93,29 @@ export default {
       }
       return 0;
     },
-    selectFoods(){
+    selectFoods() {
       let foods = [];
-      this.goods.forEach((good)=>{
-        this.foods.forEach((food)=>{
-          if(food.count){
-            foods.push(food)
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          // 判断是否被选中了
+          if (food.count) {
+            foods.push(food);
           }
-        })
-      })
+        });
+      });
       return foods;
-      console.log(foods)
+      console.log(foods);
     }
   },
   methods: {
-    // 
-    selectfood(food,event){
-       if (!event._constructed) {
+    //
+    selectfood(food, event) {
+      if (!event._constructed) {
         return;
       }
-      this.selectfoodA  = food;
-      this.$refs.food.show()
+      this.selectfoodA = food;
+      this.$refs.datail.show();
+      console.log( this.selectfoodA)
     },
 
     // left点击
@@ -155,8 +154,22 @@ export default {
         this.listHeight.push(h);
       }
       // console.log(this.listHeight);
-    }
-  }
+    },
+    // 下落的方法
+    // _drop(target){
+    //   // 体验优化，异步执行动画
+    //   this.$nextTick(()=>{
+    //     this.$refs.shopcart.drop(target)
+    //   })
+    // }
+  },
+  // event: {
+  //   // 一个接受事件方法，由父组件接受到cartconcontrol传过来的事件；
+  //   // 拿到这个事件，调用子组件的一个方法shopcart.vue的方法,进行处理动作
+  //   'cart.add'(target){
+  //     this._drop(target)
+  //   }
+  // }
 };
 </script>
 <style scoped lang="less">

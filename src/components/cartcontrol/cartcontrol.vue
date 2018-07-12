@@ -6,7 +6,7 @@
         </div>
         <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
         <!-- click.stop.prevent:阻止事件冒泡 -->
-        <div class="cart-add icon-add_circle" @click.stop.prevent="addcart($event)">+</div>
+        <div class="cart-add icon-add_circle" @click.stop.prevent="addcart">+</div>
     </div>
 </template>
 <script>
@@ -26,12 +26,16 @@ export default {
       }
       // 判断count是否存在
       if (!this.food.count) {
-        //不存在 也就第一次 所以count赋为1
+        //添加一个不存在的字段 也就第一次 所以count赋为1
         // 所以要用vue.set来获取count
         Vue.set(this.food, "count", 1);
       } else {
         this.food.count++;
       }
+
+      // 派发一个事件
+      // 当添加一个商品时，派发一个事件，把这个event.target dom对象，作为cart.add事件参数传入，然后在goods组件写一个方法
+      // this.$emit('cart.add',event.target)
     },
     remove(event) {
       if (!event._constructed) {
