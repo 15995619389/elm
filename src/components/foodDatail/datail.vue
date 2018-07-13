@@ -32,7 +32,19 @@
             <Split></Split>
             <div class="rating">
               <h1 class="title">商品评价</h1>
-
+              <!-- 评价组件 -->
+              <ratingSelect :ratings="food.ratings" :selectType="selectType" :onlyContent="onlyContent" :desc="desc" @ratingtypeselect="aa(type)" @contenttoggle="bb(onlyContent)"></ratingSelect>
+              <div class="rating-wrapper">
+                <ul v-show="food.ratings && food.ratings.length">
+                  <li v-for="(rating,index) in food.ratings" :key="index" class="rating-item">
+                    <div class="user">
+                      <span class="name">{{rating.username}}</span>
+                      <img :src="rating.avatar" width="12" height="12" class="avatar"/>
+                    </div>
+                  </li>
+                </ul>
+                <div v-show="!food.ratings && !food.ratings.length" class="no-rating">暂无评价</div>
+              </div>
             </div>
         </div>
     </div>
@@ -42,14 +54,15 @@ import Vue from 'vue'
 import BScroll from "better-scroll";
 import Cartcontrol from '../cartcontrol/cartcontrol'
 import Split from '../split/split'
+import ratingSelect from '../ratingselect/ratingselect'
 
-const ALL = 2;
+const all = 2;
 export default {
   // 从父组件传过来的
   data() {
     return {
       showFlag: false,
-      selectType:ALL,
+      selectType:all,
       onlyContent:true,
       desc:{
         all:'全部',
@@ -60,13 +73,41 @@ export default {
   },
   components:{
     Cartcontrol,
-    Split
+    Split,
+    ratingSelect
   },
   props: ["food"],
   created(){
     console.log(this.food)
   },
+  // 对ratingselect传过来的监听两个事件
+    events: {
+      'ratingtype.select'(type) {
+        this.selectType = type;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+      },
+      'content.toggle'(onlyContent) {
+        this.onlyContent = onlyContent;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+      }
+    },
   methods: {
+    aa(type){
+      this.selectType = type;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+    },
+    bb(onlyContent){
+      this.onlyContent = onlyContent;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+    },
     // 加入购物车
     addFirst(event){
       if(!event._constructed){
@@ -75,8 +116,9 @@ export default {
       Vue.set(this.food,'count',1)
     },
     show() {
+      // 展示的时候要初始化一次  展示初始值
       this.showFlag = true;
-      this.selectType = ALL;
+      this.selectType = all;
       this.onlyContent = true;
       // 当为nextTick时，保证dom渲染了
       this.$nextTick(() => {
@@ -218,7 +260,7 @@ export default {
       }
     }
     .rating{
-      padding-top: 0 18px;
+      padding-top: 18px;
       .title{
         line-height: 14px;
         margin-left: 18px;

@@ -2,22 +2,89 @@
     <div class="ratingselect">
         <!-- rating-type评价三种类型 -->
         <div class="rating-type">
-            <span class="block positive" @click="select()" :class="{'active':selectType==0}"></span>
-            <span class="block positive" @click="select()" :class="{'active':selectType==1}"></span>
-            <span class="block positive" @click="select()" :class="{'active':selectType==2}"></span>
+            <span class="block positive" @click="select(2,$event)" :class="{'active':selectType==2}">{{desc.all}}
+                <span class="count">{{ratings.length}}</span>
+            </span>
+            <span class="block positive" @click="select(0,$event)" :class="{'active':selectType==0}">{{desc.positive}}
+                <span class="count">{{positives.length}}</span>
+            </span>
+            <span class="block negative" @click="select(1,$event)" :class="{'active':selectType==1}">{{desc.negative}}
+                <span class="count">{{negatives.length}}</span>
+            </span>
         </div>
+        <div class="switch" @click="toggleContent" :class="{'on':onlyContent}">
+            <span class="icon-check_circle"></span>
+            <span class="text">只看有内容的评价</span>
+        </div>  
     </div>
 </template>
 <script>
-export default {
-    data(){
-        return{
+const POSITIVE = 0;
+const NEGATIVE = 1;
+const all = 2; //全部
 
-        }
+export default {
+  data() {
+    return {};
+  },
+  props: {
+    //
+    ratings: {
+      type: Array,
+      default() {
+        return [];
+      }
     },
-    props:{
-        
+    //选择类型
+    selectType: {
+      type: Number,
+      default: all
+    },
+    //
+    onlyContent: {
+      type: Boolean,
+      default: false
+    },
+    // 描述
+    desc: {
+      type: Object,
+      default() {
+        return {
+          ALL: "全部",
+          positive: "满意",
+          negative: "不满意"
+        };
+      }
     }
+  },
+  computed:{
+      positives(){
+          return this.ratings.filter((rating)=>{
+              return rating.rateType = POSITIVE
+          })
+      },
+      negatives(){
+          return this.ratings.filter((rating)=>{
+              return rating.rateType = NEGATIVE
+          })
+      }
+  },
+  methods: {
+    select(type, event) {
+      if (!event._constructed) {
+        return;
+      }
+      this.selectType = type;
+      this.$emit("ratingtypeselect", type);
+    },
+    toggleContent(event) {
+      if (!event._constructed) {
+        return;
+      }
+      this.onlyContent = !this.onlyContent; //取反
+      this.$emit("contenttoggle", this.onlyContent);
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -25,7 +92,7 @@ export default {
   .rating-type {
     padding: 18px 0;
     margin: 0 18px;
-    border: 1px solid (rgba(7, 17, 27, 0.1));
+    border-bottom: 1px solid (rgba(7, 17, 27, 0.1));
     font-size: 0;
     .block {
       display: inline-block;
@@ -36,8 +103,54 @@ export default {
       font-size: 12px;
       color: rgb(77, 85, 93);
     }
-    .active{
-       color: #fff ;
+    .active {
+      color: #fff;
+      background: rgb(0, 160, 220);
+    }
+    .count {
+      margin-left: 2px;
+      font-size: 8px;
+    }
+    .positive {
+      background: rgba(0, 160, 220, 0.2);
+      .active {
+        background: rgb(0, 160, 220);
+      }
+    }
+    .negative {
+      background: rgba(77, 85, 93, 0.2);
+      .active {
+        background: rgb(77, 85, 93);
+      }
+    }
+  }
+  
+  .switch {
+    padding: 12px 18px;
+    line-height: 24px;
+    border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+    color: rgb(147, 153, 159);
+    font-size: 0;
+    .icon-check_circle {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 4px;
+      font-size: 24px;
+      background: red;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      margin-top: 5px;
+    }
+    .text {
+      display: inline-block;
+      vertical-align: top;
+      font-size: 12px;
+    }
+  }
+  .on {
+    .icon-check_circle {
+      background: #00c850;
     }
   }
 }
