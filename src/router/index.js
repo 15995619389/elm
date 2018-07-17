@@ -11,19 +11,28 @@ export default new Router({
   routes: [
     {
       path: '',
-      redirect:'/goods'//路由重定向
+      redirect:'/goods',//路由重定向
     },
     {
       path:'/goods',
-      component:Goods
+      component:Goods,
+      meta:{
+        title:'店鋪首頁'
+      }
     },
     {
       path:'/ratings',
-      component:Ratings
+      component:Ratings,
+      meta:{
+        title:'用戶評論'
+      }
     },
     {
       path:'/seller',
-      component:Seller
+      component:Seller,
+      meta:{
+        title:'商家商品列表'
+      }
     }
   ]
 })

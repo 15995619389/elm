@@ -74,15 +74,13 @@ export default {
       if (!event._constructed) {
         return;
       }
-      this.selectType = type;
-      this.$emit("ratingtypeselect", type);
+      this.$emit("selecttype", type);
     },
     toggleContent(event) {
       if (!event._constructed) {
         return;
       }
-      this.onlyContent = !this.onlyContent; //取反
-      this.$emit("contenttoggle", this.onlyContent);
+      this.$emit("content");
     }
   }
 };

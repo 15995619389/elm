@@ -15,7 +15,7 @@
       </div>
     </div>
     <!-- 路由外联  把seller参数传递过去 -->
-    <router-view :seller="seller"></router-view>
+    <router-view :seller="seller" v-wechat-title="$route.meta.title"></router-view>
   </div>
 </template>
 

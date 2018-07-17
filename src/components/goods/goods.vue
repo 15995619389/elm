@@ -47,7 +47,7 @@
        <ShopCart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart" :select-foods="selectFoods"></ShopCart>
 
        <!-- datail -->
-      <Datail :food='selectfoodA' ref="datail"></Datail>
+      <Datail :food='selectfoodA' ref="datail" ></Datail>
     </div>
 </template>
 <script>
@@ -105,6 +105,7 @@ export default {
       });
       return foods;
       console.log(foods);
+      console.log("goods")
     }
   },
   methods: {
