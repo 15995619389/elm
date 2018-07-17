@@ -104,8 +104,6 @@ export default {
         });
       });
       return foods;
-      console.log(foods);
-      console.log("goods")
     }
   },
   methods: {

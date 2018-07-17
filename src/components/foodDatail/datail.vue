@@ -33,16 +33,16 @@
             <div class="rating">
               <h1 class="title">商品评价</h1>
               <!-- 评价组件 -->
-              <ratingSelect :ratings="food.ratings" :selectType="selectType" :onlyContent="onlyContent" :desc="desc" @setType="set" @content="con"></ratingSelect>
+              <ratingSelect :ratings="food.ratings" :selectType="selectType" :onlyContent="onlyContent" :desc="desc" @selecttype="set" @content="con"></ratingSelect>
               <div class="rating-wrapper">
                 <ul v-if="food.ratings && food.ratings.length">
-                  <li v-for="(rating,index) in food.ratings" :key="index" class="rating-item" >
+                  <li v-for="(rating,index) in food.ratings" :key="index" class="rating-item" >  <!--v-show="needShow(rating.rateType,rating.text)"-->
                     
                     <div class="user">
                       <span class="name">{{rating.username}}</span>
                       <img :src="rating.avatar" width="12" height="12" class="avatar"/>
                     </div>
-                    <div class="time">{{rating.rateTime}}</div>
+                    <div class="time">{{rating.rateTime | formatDate}}</div>
                     <div class="text">
                       <span :class="{'icon-thumb_up':rating.rateType ===0,'icon-thumb_down':rating.rateType ===1}"></span>
                       {{rating.text}}
@@ -61,6 +61,7 @@ import BScroll from "better-scroll";
 import Cartcontrol from "../cartcontrol/cartcontrol";
 import Split from "../split/split";
 import ratingSelect from "../ratingselect/ratingselect";
+import {formatDate} from '../../common/js/date'
 
 const all = 2;
 export default {
@@ -83,29 +84,37 @@ export default {
     ratingSelect
   },
   props: ["food"],
-  created() {
-    console.log('我是food頁');
-    console.log(this.food);
-  },
   
   // 对ratingselect传过来的监听两个事件
-  events: {
-    "ratingtypeselect"(type) {
-      this.selectType = type;
-      this.$nextTick(() => {
-        this.scroll.refresh();
-      });
-    },
-    "contenttoggle"(onlyContent) {
-      this.onlyContent = onlyContent;
-      this.$nextTick(() => {
-        this.scroll.refresh();
-      });
-    }
-  },
+  // events: {
+  //   "ratingtypeselect"(type) {
+  //     this.selectType = type;
+  //     this.$nextTick(() => {
+  //       this.scroll.refresh();
+  //     });
+  //   },
+  //   "contenttoggle"(onlyContent) {
+  //     this.onlyContent = onlyContent;
+  //     this.$nextTick(() => {
+  //       this.scroll.refresh();
+  //     });
+  //   }
+  // },
   methods: {
+    needShow(type,text){
+      if(this.onlyContent && text){
+        return false;
+      }
+      if(this.selectType == all){
+        return true;
+      }else{
+        return type = this.selectType
+      }
+    },
+    // 子组件调用父组件的事件方法:v-on   子组件使用：$emit('事件名称',参数) ：参数为可选
     set(type) {
       this.selectType = type;
+      // $nextTick :dom更新之后
       this.$nextTick(() => {
         this.scroll.refresh();
       });
@@ -142,7 +151,15 @@ export default {
     back() {
       this.showFlag = false;
     }
+  },
+  // 过滤
+  filters:{
+    formatDate(time){
+      let date = new Date(time);
+      return formatDate(date,'yyyy-MM-dd hh:mm')
+    }
   }
+
 };
 </script>
 <style lang="less" scoped>
@@ -335,6 +352,7 @@ export default {
           padding: 16px 0;
           font-size: 12px;
           color: rgb(147, 153, 159);
+          text-align: center
         }
       }
     }

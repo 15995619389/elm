@@ -31,9 +31,9 @@ export default {
   },
   created(){
     this.$http.get('/api/seller').then( (res) =>{
-      console.log(res)
       if(res.body.errno == 0){
         this.seller = res.body.data
+        console.log(this.seller)
       }
     })
     
@@ -54,9 +54,9 @@ export default {
 .tab {
   display: flex;
   width: 100%;
-  height: 40px;
+  height: 39px;
   line-height: 40px;
-  border-bottom: 1px solid rgba(7, 17, blue, alpha)
+  border-bottom: 1px solid #ddd
 }
 .tab .tab-item{
   flex: 1;

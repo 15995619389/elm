@@ -50,7 +50,7 @@ export default {
       type: Object,
       default() {
         return {
-          ALL: "全部",
+          all: "全部",
           positive: "满意",
           negative: "不满意"
         };
@@ -102,7 +102,7 @@ export default {
       color: rgb(77, 85, 93);
     }
     .active {
-      color: #fff;
+      color: red;
       background: rgb(0, 160, 220);
     }
     .count {
