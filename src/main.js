@@ -5,13 +5,11 @@ import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
 import VueWechatTitle from 'vue-wechat-title'
-import vuePicturePreview from 'vue-picture-preview'
 
 Vue.config.productionTip = false
 
 Vue.use(VueWechatTitle)
 Vue.use(VueResource)
-Vue.use(vuePicturePreview)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

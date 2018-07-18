@@ -14,11 +14,9 @@
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "vue": "^2.5.2",
-    "vue-picture-preview": "^1.2.0",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
-    "vue-wechat-title": "^2.0.4",
-    "vue2-preview": "^1.0.2"
+    "vue-wechat-title": "^2.0.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
