@@ -5,15 +5,17 @@ import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
 import VueWechatTitle from 'vue-wechat-title'
+// import Store from '../src/vuex/store'
 
 Vue.config.productionTip = false
 
-Vue.use(VueWechatTitle)
-Vue.use(VueResource)
+Vue.use(VueWechatTitle).use(VueResource)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  // Store,
   components: { App },
   template: '<App/>'
 })

@@ -1,5 +1,7 @@
 <template>
     <div class="header">
+      <!-- vuex练习组件 -->
+      <!-- <Str></Str> -->
         <div class="content-wrapper">
             <div class="avatar">
                 <img width="64" height="64" :src="seller.avatar"/>
@@ -73,6 +75,7 @@
 </template>
 <script>
 import Star from "../star/star";
+import Str from '../store/index'
 export default {
   data() {
     return {
@@ -86,11 +89,12 @@ export default {
   //     }
   //   }
   components: {
-    Star
+    Star,
+    Str
   },
   props: ["seller"],
   created() {
-    
+  
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
   },
   methods: {

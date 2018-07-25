@@ -25,7 +25,7 @@
         <div class="shopcart-list" v-show="listShow" transition="fade">
           <div class="list-header">
             <h1 class="title">购物车</h1>
-            <span class="empty">清空</span>
+            <span class="empty" @click="empty">清空</span>
           </div>
           <div class="list-content" ref="listContent">
             <ul>
@@ -134,9 +134,6 @@ export default {
       }
     },
     listShow() {
-   
-      
-
       // 也就是等于0
       if (this.totalCount <= 0) {
         this.fold = true;
@@ -160,6 +157,12 @@ export default {
         return;
       }
       this.fold = !this.fold;
+    },
+    empty(){
+      this.selectFoods.forEach((food)=>{
+        food.count = 0 ;
+        this.maskShow = false
+      })
     }
   }
 };
